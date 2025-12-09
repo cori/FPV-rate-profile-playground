@@ -105,6 +105,39 @@
                 </div>
             </div>
         </div>
+
+        <!-- Import/Export Section -->
+        <div class="import-export-section">
+            <div class="import-panel">
+                <h2>Import CLI Dump</h2>
+                <p class="help-text">Paste your Betaflight CLI dump below (full or partial). The last value for each setting will be used.</p>
+                <textarea id="import-text" placeholder="Paste CLI dump here...
+Example:
+set rates_type = ACTUAL
+set roll_rc_rate = 70
+set pitch_rc_rate = 75
+set yaw_rc_rate = 80
+set roll_rate = 670
+set pitch_rate = 650
+set yaw_rate = 600
+set roll_expo = 0
+set pitch_expo = 0
+set yaw_expo = 0
+set thr_mid = 50
+set thr_expo = 0"></textarea>
+                <button id="import-btn" class="btn btn-primary">Import Settings</button>
+                <button id="clear-import-btn" class="btn btn-secondary">Clear</button>
+                <div id="import-status" class="status-message"></div>
+            </div>
+
+            <div class="export-panel">
+                <h2>Export CLI Commands</h2>
+                <p class="help-text">Copy these commands to apply your current settings in Betaflight CLI.</p>
+                <textarea id="export-text" readonly></textarea>
+                <button id="copy-export-btn" class="btn btn-primary">Copy to Clipboard</button>
+                <div id="export-status" class="status-message"></div>
+            </div>
+        </div>
     </div>
 
     <script src="rates.js"></script>

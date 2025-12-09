@@ -17,7 +17,9 @@ class RateProfile {
 
         this.initializeControls();
         this.initializeCanvases();
+        this.initializeImportExport();
         this.updateGraphs();
+        this.updateExport();
     }
 
     initializeControls() {
@@ -31,6 +33,7 @@ class RateProfile {
                 this.rates[axis].center = parseInt(e.target.value);
                 centerValue.textContent = e.target.value;
                 this.updateGraphs();
+                this.updateExport();
             });
 
             // Max Rate
@@ -40,6 +43,7 @@ class RateProfile {
                 this.rates[axis].maxRate = parseInt(e.target.value);
                 maxValue.textContent = e.target.value;
                 this.updateGraphs();
+                this.updateExport();
             });
 
             // Expo
@@ -49,6 +53,7 @@ class RateProfile {
                 this.rates[axis].expo = parseInt(e.target.value);
                 expoValue.textContent = e.target.value;
                 this.updateGraphs();
+                this.updateExport();
             });
         });
 
@@ -59,6 +64,7 @@ class RateProfile {
             this.throttle.mid = parseInt(e.target.value);
             throttleMidValue.textContent = (e.target.value / 100).toFixed(2);
             this.updateGraphs();
+            this.updateExport();
         });
 
         const throttleExpoSlider = document.getElementById('throttle-expo');
@@ -67,6 +73,7 @@ class RateProfile {
             this.throttle.expo = parseInt(e.target.value);
             throttleExpoValue.textContent = e.target.value;
             this.updateGraphs();
+            this.updateExport();
         });
     }
 
@@ -75,6 +82,200 @@ class RateProfile {
         this.rateCtx = this.rateCanvas.getContext('2d');
         this.throttleCanvas = document.getElementById('throttle-canvas');
         this.throttleCtx = this.throttleCanvas.getContext('2d');
+    }
+
+    initializeImportExport() {
+        // Import button
+        const importBtn = document.getElementById('import-btn');
+        importBtn.addEventListener('click', () => this.importSettings());
+
+        // Clear import button
+        const clearImportBtn = document.getElementById('clear-import-btn');
+        clearImportBtn.addEventListener('click', () => {
+            document.getElementById('import-text').value = '';
+            document.getElementById('import-status').textContent = '';
+        });
+
+        // Copy export button
+        const copyExportBtn = document.getElementById('copy-export-btn');
+        copyExportBtn.addEventListener('click', () => this.copyExport());
+    }
+
+    parseCLI(text) {
+        // Parse Betaflight CLI dump format
+        // Format: set parameter_name = value
+        const settings = {};
+        const lines = text.split('\n');
+
+        for (const line of lines) {
+            // Match pattern: set parameter_name = value
+            // Also support without 'set' prefix and various spacing
+            const match = line.match(/^\s*(?:set\s+)?([a-z_]+)\s*=\s*(.+?)\s*$/i);
+            if (match) {
+                const key = match[1].toLowerCase();
+                const value = match[2].trim();
+                // Store last occurrence (overwrites previous)
+                settings[key] = value;
+            }
+        }
+
+        return settings;
+    }
+
+    importSettings() {
+        const importText = document.getElementById('import-text').value;
+        const statusDiv = document.getElementById('import-status');
+
+        if (!importText.trim()) {
+            statusDiv.textContent = 'Please paste CLI dump text first.';
+            statusDiv.className = 'status-message error';
+            return;
+        }
+
+        const settings = this.parseCLI(importText);
+        let importedCount = 0;
+        const imported = [];
+
+        // Map CLI parameter names to our internal structure
+        const mapping = {
+            'roll_rc_rate': (val) => { this.rates.roll.center = parseInt(val); imported.push('roll center'); },
+            'pitch_rc_rate': (val) => { this.rates.pitch.center = parseInt(val); imported.push('pitch center'); },
+            'yaw_rc_rate': (val) => { this.rates.yaw.center = parseInt(val); imported.push('yaw center'); },
+            'roll_rate': (val) => { this.rates.roll.maxRate = parseInt(val); imported.push('roll max rate'); },
+            'pitch_rate': (val) => { this.rates.pitch.maxRate = parseInt(val); imported.push('pitch max rate'); },
+            'yaw_rate': (val) => { this.rates.yaw.maxRate = parseInt(val); imported.push('yaw max rate'); },
+            'roll_expo': (val) => { this.rates.roll.expo = parseInt(val); imported.push('roll expo'); },
+            'pitch_expo': (val) => { this.rates.pitch.expo = parseInt(val); imported.push('pitch expo'); },
+            'yaw_expo': (val) => { this.rates.yaw.expo = parseInt(val); imported.push('yaw expo'); },
+            'thr_mid': (val) => { this.throttle.mid = parseInt(val); imported.push('throttle mid'); },
+            'thr_expo': (val) => { this.throttle.expo = parseInt(val); imported.push('throttle expo'); }
+        };
+
+        // Apply settings
+        for (const [key, handler] of Object.entries(mapping)) {
+            if (settings[key] !== undefined) {
+                handler(settings[key]);
+                importedCount++;
+            }
+        }
+
+        // Update UI
+        this.updateUIFromModel();
+        this.updateGraphs();
+        this.updateExport();
+
+        // Show status
+        if (importedCount > 0) {
+            statusDiv.textContent = `✓ Successfully imported ${importedCount} settings: ${imported.join(', ')}`;
+            statusDiv.className = 'status-message success';
+        } else {
+            statusDiv.textContent = 'No recognized rate settings found in the text.';
+            statusDiv.className = 'status-message warning';
+        }
+    }
+
+    updateUIFromModel() {
+        // Update all sliders and their value displays
+        const axes = ['roll', 'pitch', 'yaw'];
+
+        axes.forEach(axis => {
+            // Center
+            const centerSlider = document.getElementById(`${axis}-center`);
+            const centerValue = document.getElementById(`${axis}-center-value`);
+            centerSlider.value = this.rates[axis].center;
+            centerValue.textContent = this.rates[axis].center;
+
+            // Max Rate
+            const maxSlider = document.getElementById(`${axis}-max`);
+            const maxValue = document.getElementById(`${axis}-max-value`);
+            maxSlider.value = this.rates[axis].maxRate;
+            maxValue.textContent = this.rates[axis].maxRate;
+
+            // Expo
+            const expoSlider = document.getElementById(`${axis}-expo`);
+            const expoValue = document.getElementById(`${axis}-expo-value`);
+            expoSlider.value = this.rates[axis].expo;
+            expoValue.textContent = this.rates[axis].expo;
+        });
+
+        // Throttle
+        const throttleMidSlider = document.getElementById('throttle-mid');
+        const throttleMidValue = document.getElementById('throttle-mid-value');
+        throttleMidSlider.value = this.throttle.mid;
+        throttleMidValue.textContent = (this.throttle.mid / 100).toFixed(2);
+
+        const throttleExpoSlider = document.getElementById('throttle-expo');
+        const throttleExpoValue = document.getElementById('throttle-expo-value');
+        throttleExpoSlider.value = this.throttle.expo;
+        throttleExpoValue.textContent = this.throttle.expo;
+    }
+
+    generateCLI() {
+        // Generate Betaflight CLI commands
+        const commands = [
+            '# Betaflight Rate Profile Configuration',
+            '# Generated by FPV Rate Profile Playground',
+            '',
+            '# Rate Type',
+            'set rates_type = ACTUAL',
+            '',
+            '# Roll Rates',
+            `set roll_rc_rate = ${this.rates.roll.center}`,
+            `set roll_rate = ${this.rates.roll.maxRate}`,
+            `set roll_expo = ${this.rates.roll.expo}`,
+            '',
+            '# Pitch Rates',
+            `set pitch_rc_rate = ${this.rates.pitch.center}`,
+            `set pitch_rate = ${this.rates.pitch.maxRate}`,
+            `set pitch_expo = ${this.rates.pitch.expo}`,
+            '',
+            '# Yaw Rates',
+            `set yaw_rc_rate = ${this.rates.yaw.center}`,
+            `set yaw_rate = ${this.rates.yaw.maxRate}`,
+            `set yaw_expo = ${this.rates.yaw.expo}`,
+            '',
+            '# Throttle',
+            `set thr_mid = ${this.throttle.mid}`,
+            `set thr_expo = ${this.throttle.expo}`,
+            '',
+            'save'
+        ];
+
+        return commands.join('\n');
+    }
+
+    updateExport() {
+        const exportText = document.getElementById('export-text');
+        exportText.value = this.generateCLI();
+    }
+
+    copyExport() {
+        const exportText = document.getElementById('export-text');
+        const statusDiv = document.getElementById('export-status');
+
+        exportText.select();
+        exportText.setSelectionRange(0, 99999); // For mobile devices
+
+        try {
+            navigator.clipboard.writeText(exportText.value).then(() => {
+                statusDiv.textContent = '✓ Copied to clipboard!';
+                statusDiv.className = 'status-message success';
+                setTimeout(() => {
+                    statusDiv.textContent = '';
+                }, 3000);
+            }).catch(() => {
+                // Fallback to document.execCommand
+                document.execCommand('copy');
+                statusDiv.textContent = '✓ Copied to clipboard!';
+                statusDiv.className = 'status-message success';
+                setTimeout(() => {
+                    statusDiv.textContent = '';
+                }, 3000);
+            });
+        } catch (err) {
+            statusDiv.textContent = '✗ Failed to copy. Please select and copy manually.';
+            statusDiv.className = 'status-message error';
+        }
     }
 
     // Betaflight Actual Rates calculation

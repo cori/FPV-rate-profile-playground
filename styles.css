@@ -206,6 +206,10 @@ canvas {
         grid-template-columns: 1fr;
     }
 
+    .import-export-section {
+        grid-template-columns: 1fr;
+    }
+
     canvas {
         max-width: 100%;
         height: auto;
@@ -226,6 +230,134 @@ canvas {
         gap: 10px;
         align-items: center;
     }
+
+    textarea {
+        min-height: 200px;
+    }
+
+    .btn {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+}
+
+/* Import/Export Section */
+.import-export-section {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.import-panel,
+.export-panel {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 170, 255, 0.3);
+    border-radius: 10px;
+    padding: 25px;
+    backdrop-filter: blur(10px);
+}
+
+.help-text {
+    color: #999;
+    font-size: 0.9em;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+textarea {
+    width: 100%;
+    min-height: 300px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(0, 170, 255, 0.3);
+    border-radius: 5px;
+    color: #e0e0e0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+    line-height: 1.5;
+    resize: vertical;
+    margin-bottom: 15px;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: rgba(0, 170, 255, 0.6);
+    box-shadow: 0 0 10px rgba(0, 170, 255, 0.3);
+}
+
+textarea::placeholder {
+    color: #555;
+}
+
+textarea[readonly] {
+    background: rgba(0, 0, 0, 0.3);
+    cursor: default;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-right: 10px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #00aaff, #0088cc);
+    color: white;
+    box-shadow: 0 0 10px rgba(0, 170, 255, 0.5);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #00ddff, #00aaff);
+    box-shadow: 0 0 15px rgba(0, 170, 255, 0.8);
+    transform: translateY(-2px);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: #e0e0e0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.status-message {
+    margin-top: 15px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    line-height: 1.4;
+}
+
+.status-message.success {
+    background: rgba(0, 255, 100, 0.1);
+    border: 1px solid rgba(0, 255, 100, 0.3);
+    color: #00ff88;
+}
+
+.status-message.error {
+    background: rgba(255, 50, 50, 0.1);
+    border: 1px solid rgba(255, 50, 50, 0.3);
+    color: #ff6666;
+}
+
+.status-message.warning {
+    background: rgba(255, 170, 0, 0.1);
+    border: 1px solid rgba(255, 170, 0, 0.3);
+    color: #ffaa00;
 }
 
 /* Scrollbar styling */
