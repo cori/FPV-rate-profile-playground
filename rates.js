@@ -317,15 +317,17 @@ class RateProfile {
         const mid = this.throttle.mid / 100;
         const expo = this.throttle.expo / 100;
 
+        // Apply expo to the entire stick range (single smooth curve)
+        const expof = input * (1 - expo) + Math.pow(input, 3) * expo;
+
+        // Scale the expo curve to pass through the mid point at 50% stick
         let throttle;
-        if (input < 0.5) {
-            // Lower half
-            const x = input * 2; // 0 to 1
-            throttle = mid * (x * (1 - expo) + Math.pow(x, 3) * expo);
+        if (expof < 0.5) {
+            // Scale 0-0.5 input to 0-mid output
+            throttle = expof * 2 * mid;
         } else {
-            // Upper half
-            const x = (input - 0.5) * 2; // 0 to 1
-            throttle = mid + (1 - mid) * (x * (1 - expo) + Math.pow(x, 3) * expo);
+            // Scale 0.5-1.0 input to mid-1.0 output
+            throttle = mid + (expof - 0.5) * 2 * (1 - mid);
         }
 
         return throttle;
