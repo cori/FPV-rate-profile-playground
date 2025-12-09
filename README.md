@@ -8,6 +8,7 @@ A web-based tool that replicates Betaflight's rate profile configuration page, a
 - **Interactive Rate Curves**: Real-time visualization of roll, pitch, and yaw rate curves
 - **Throttle Curve**: Adjustable throttle curve with mid-point and expo control
 - **Live Updates**: All changes are reflected immediately in the graphs
+- **CLI Import/Export**: Import settings from Betaflight CLI dumps and export your tuned settings
 - **Betaflight-style UI**: Dark theme matching the Betaflight Configurator aesthetic
 
 ## Parameters
@@ -27,6 +28,36 @@ A web-based tool that replicates Betaflight's rate profile configuration page, a
 2. Adjust the sliders to modify rate parameters
 3. Observe the changes in the rate and throttle curves
 4. Fine-tune your settings until you find the perfect feel
+
+### Import/Export CLI Settings
+
+**Import:**
+1. Copy your Betaflight CLI dump (or just the rate-related settings)
+2. Paste into the "Import CLI Dump" text area
+3. Click "Import Settings"
+4. The app will parse and apply all recognized rate parameters (last value wins if duplicates exist)
+
+**Export:**
+1. Adjust your rates using the sliders
+2. The export text area automatically updates with CLI commands
+3. Click "Copy to Clipboard" to copy the commands
+4. Paste into Betaflight CLI and type `save` to apply
+
+Example CLI format:
+```
+set rates_type = ACTUAL
+set roll_rc_rate = 70
+set pitch_rc_rate = 70
+set yaw_rc_rate = 70
+set roll_rate = 670
+set pitch_rate = 670
+set yaw_rate = 670
+set roll_expo = 0
+set pitch_expo = 0
+set yaw_expo = 0
+set thr_mid = 50
+set thr_expo = 0
+```
 
 ## Rate Curve Interpretation
 
