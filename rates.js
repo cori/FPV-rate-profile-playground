@@ -301,12 +301,12 @@ class RateProfile {
         const maxRateDegS = maxRate;
 
         // Calculate the rate
-        // Center sensitivity controls the slope at center stick (rate increases linearly at small deflections)
-        // Expo causes transition from linear center behavior to reaching maxRate at full deflection
+        // Center sensitivity controls the slope at center stick
+        // Expo applies curvature to the stick response (expof is the processed stick input)
         // At center stick (rcCommand = 0): rate = 0 (no rotation)
-        // At small deflections: rate increases with slope = centerSensitivity
         // At full deflection: rate = maxRate
-        const rate = rcCommandAbs * centerSensitivity + expof * rcCommandAbs * (maxRateDegS - centerSensitivity);
+        // With CS=0 and expo=0: linear response from 0 to maxRate
+        const rate = rcCommandAbs * centerSensitivity + expof * (maxRateDegS - centerSensitivity);
 
         return rcCommandNormalized >= 0 ? rate : -rate;
     }
