@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Betaflight Rate Profile Configuration</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Betaflight Rate Profile Configuration</h1>
+
+        <div class="main-layout">
+            <!-- Controls Panel -->
+            <div class="controls-panel">
+                <h2>Rate Settings (Actual Rates)</h2>
+
+                <div class="control-group">
+                    <h3>Roll</h3>
+                    <div class="control-item">
+                        <label for="roll-center">Center Sensitivity:</label>
+                        <input type="range" id="roll-center" min="0" max="255" value="70" step="1">
+                        <span id="roll-center-value">70</span>
+                    </div>
+                    <div class="control-item">
+                        <label for="roll-max">Max Rate (deg/s):</label>
+                        <input type="range" id="roll-max" min="200" max="2000" value="670" step="10">
+                        <span id="roll-max-value">670</span>
+                    </div>
+                    <div class="control-item">
+                        <label for="roll-expo">Expo:</label>
+                        <input type="range" id="roll-expo" min="0" max="100" value="0" step="1">
+                        <span id="roll-expo-value">0</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>Pitch</h3>
+                    <div class="control-item">
+                        <label for="pitch-center">Center Sensitivity:</label>
+                        <input type="range" id="pitch-center" min="0" max="255" value="70" step="1">
+                        <span id="pitch-center-value">70</span>
+                    </div>
+                    <div class="control-item">
+                        <label for="pitch-max">Max Rate (deg/s):</label>
+                        <input type="range" id="pitch-max" min="200" max="2000" value="670" step="10">
+                        <span id="pitch-max-value">670</span>
+                    </div>
+                    <div class="control-item">
+                        <label for="pitch-expo">Expo:</label>
+                        <input type="range" id="pitch-expo" min="0" max="100" value="0" step="1">
+                        <span id="pitch-expo-value">0</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>Yaw</h3>
+                    <div class="control-item">
+                        <label for="yaw-center">Center Sensitivity:</label>
+                        <input type="range" id="yaw-center" min="0" max="255" value="70" step="1">
+                        <span id="yaw-center-value">70</span>
+                    </div>
+                    <div class="control-item">
+                        <label for="yaw-max">Max Rate (deg/s):</label>
+                        <input type="range" id="yaw-max" min="200" max="2000" value="670" step="10">
+                        <span id="yaw-max-value">670</span>
+                    </div>
+                    <div class="control-item">
+                        <label for="yaw-expo">Expo:</label>
+                        <input type="range" id="yaw-expo" min="0" max="100" value="0" step="1">
+                        <span id="yaw-expo-value">0</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>Throttle</h3>
+                    <div class="control-item">
+                        <label for="throttle-mid">Mid Point:</label>
+                        <input type="range" id="throttle-mid" min="0" max="100" value="50" step="1">
+                        <span id="throttle-mid-value">0.50</span>
+                    </div>
+                    <div class="control-item">
+                        <label for="throttle-expo">Expo:</label>
+                        <input type="range" id="throttle-expo" min="0" max="100" value="0" step="1">
+                        <span id="throttle-expo-value">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Graphs Panel -->
+            <div class="graphs-panel">
+                <div class="graph-container">
+                    <h3>Rate Curve (Roll/Pitch/Yaw)</h3>
+                    <canvas id="rate-canvas" width="600" height="400"></canvas>
+                    <div class="graph-legend">
+                        <span class="legend-item roll">■ Roll</span>
+                        <span class="legend-item pitch">■ Pitch</span>
+                        <span class="legend-item yaw">■ Yaw</span>
+                    </div>
+                </div>
+
+                <div class="graph-container">
+                    <h3>Throttle Curve</h3>
+                    <canvas id="throttle-canvas" width="600" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="rates.js"></script>
+</body>
+</html>
