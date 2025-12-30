@@ -1,0 +1,8 @@
+node_modules
+tests
+.git
+.gitignore
+package.json
+package-lock.json
+README.md
+vitest.config.js
