@@ -14,6 +14,14 @@ class RateProfileComparison {
       document.getElementById('throttle-canvas')
     );
 
+    // Side-by-side renderers (created lazily)
+    this.graphRendererA = null;
+    this.graphRendererB = null;
+
+    // View mode
+    this.viewMode = 'overlay'; // 'overlay' or 'sidebyside'
+    this.minWidthForSideBySide = 1400;
+
     // Current profiles
     this.profileA = this.createDefaultProfile('Profile A');
     this.profileB = this.createDefaultProfile('Profile B');
@@ -25,9 +33,14 @@ class RateProfileComparison {
     // Initialize UI
     this.initializeControls();
     this.initializeVisibilityToggles();
+    this.initializeViewMode();
     this.initializeImportExport();
     this.initializeProfileActions();
     this.initializeHistory();
+
+    // Check viewport width and update view mode controls
+    this.checkViewportWidth();
+    window.addEventListener('resize', () => this.checkViewportWidth());
 
     // Initial render
     this.updateGraphs();
@@ -138,6 +151,67 @@ class RateProfileComparison {
     });
   }
 
+  initializeViewMode() {
+    document.getElementById('view-mode-overlay').addEventListener('change', (e) => {
+      if (e.target.checked) {
+        this.setViewMode('overlay');
+      }
+    });
+
+    document.getElementById('view-mode-sidebyside').addEventListener('change', (e) => {
+      if (e.target.checked) {
+        this.setViewMode('sidebyside');
+      }
+    });
+  }
+
+  checkViewportWidth() {
+    const width = window.innerWidth;
+    const viewModeControl = document.getElementById('view-mode-control');
+
+    if (width >= this.minWidthForSideBySide) {
+      // Show view mode toggle on wide screens
+      viewModeControl.style.display = '';
+    } else {
+      // Hide on narrow screens and force overlay mode
+      viewModeControl.style.display = 'none';
+      if (this.viewMode === 'sidebyside') {
+        document.getElementById('view-mode-overlay').checked = true;
+        this.setViewMode('overlay');
+      }
+    }
+  }
+
+  setViewMode(mode) {
+    this.viewMode = mode;
+    const overlayContainer = document.getElementById('graphs-overlay');
+    const sideBySideContainer = document.getElementById('graphs-sidebyside');
+
+    if (mode === 'overlay') {
+      overlayContainer.style.display = '';
+      sideBySideContainer.style.display = 'none';
+    } else {
+      overlayContainer.style.display = 'none';
+      sideBySideContainer.style.display = '';
+
+      // Initialize side-by-side renderers if not already done
+      if (!this.graphRendererA) {
+        this.graphRendererA = new GraphRenderer(
+          document.getElementById('rate-canvas-a'),
+          document.getElementById('throttle-canvas-a')
+        );
+      }
+      if (!this.graphRendererB) {
+        this.graphRendererB = new GraphRenderer(
+          document.getElementById('rate-canvas-b'),
+          document.getElementById('throttle-canvas-b')
+        );
+      }
+    }
+
+    this.updateGraphs();
+  }
+
   initializeImportExport() {
     // Profile A
     document.getElementById('import-btn-a').addEventListener('click', () => {
@@ -222,7 +296,17 @@ class RateProfileComparison {
   }
 
   updateGraphs() {
-    this.graphRenderer.render(this.profileA, this.profileB);
+    if (this.viewMode === 'overlay') {
+      this.graphRenderer.render(this.profileA, this.profileB);
+    } else {
+      // Side-by-side mode - render each profile separately
+      if (this.graphRendererA && this.graphRendererB) {
+        // For side-by-side, we show each profile independently (not overlaid)
+        // So we pass the profile and null for the second profile
+        this.graphRendererA.render(this.profileA, null);
+        this.graphRendererB.render(this.profileB, null);
+      }
+    }
   }
 
   updateExports() {

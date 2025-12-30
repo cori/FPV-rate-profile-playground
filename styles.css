@@ -228,6 +228,62 @@ header h1 {
   color: var(--border-color);
 }
 
+/* Side-by-Side View */
+.graphs-container-sidebyside {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-xl);
+}
+
+.profile-graphs > h2 {
+  font-size: 1.5rem;
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.profile-graphs .graph-panel {
+  margin-bottom: var(--spacing-lg);
+}
+
+.profile-graphs .graph-panel h3 {
+  font-size: 1.1rem;
+  margin-bottom: var(--spacing-md);
+  color: var(--text-primary);
+}
+
+/* View Mode Control */
+.view-mode-control {
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--border-color);
+}
+
+.view-mode-control .toggle-group label {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.view-mode-control .toggle-group label:has(input:checked) {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
+
+.view-mode-control input[type="radio"] {
+  margin-right: var(--spacing-xs);
+}
+
+/* Wide screen detection */
+@media (max-width: 1400px) {
+  .graphs-container-sidebyside {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Profile Editors */
 .editors-section {
   display: grid;

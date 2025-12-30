@@ -44,10 +44,23 @@
                         </label>
                     </div>
                 </div>
+                <div class="control-group view-mode-control" id="view-mode-control" style="display: none;">
+                    <h3>Display Mode</h3>
+                    <div class="toggle-group">
+                        <label>
+                            <input type="radio" name="view-mode" id="view-mode-overlay" value="overlay" checked>
+                            Overlay (Combined)
+                        </label>
+                        <label>
+                            <input type="radio" name="view-mode" id="view-mode-sidebyside" value="sidebyside">
+                            Side-by-Side
+                        </label>
+                    </div>
+                </div>
             </div>
 
-            <!-- Graphs -->
-            <div class="graphs-container">
+            <!-- Graphs - Overlay Mode -->
+            <div class="graphs-container" id="graphs-overlay">
                 <div class="graph-panel">
                     <h2>Rate Curves</h2>
                     <canvas id="rate-canvas" width="900" height="500"></canvas>
@@ -67,6 +80,43 @@
                     <div class="graph-legend">
                         <span class="legend-item"><span class="line-solid throttle"></span> Profile A</span>
                         <span class="legend-item"><span class="line-dashed throttle"></span> Profile B</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Graphs - Side-by-Side Mode -->
+            <div class="graphs-container-sidebyside" id="graphs-sidebyside" style="display: none;">
+                <div class="profile-graphs">
+                    <h2>Profile A</h2>
+                    <div class="graph-panel">
+                        <h3>Rate Curves</h3>
+                        <canvas id="rate-canvas-a" width="700" height="400"></canvas>
+                        <div class="graph-legend">
+                            <span class="legend-item"><span class="line-solid roll"></span> Roll</span>
+                            <span class="legend-item"><span class="line-solid pitch"></span> Pitch</span>
+                            <span class="legend-item"><span class="line-solid yaw"></span> Yaw</span>
+                        </div>
+                    </div>
+                    <div class="graph-panel">
+                        <h3>Throttle Curve</h3>
+                        <canvas id="throttle-canvas-a" width="700" height="400"></canvas>
+                    </div>
+                </div>
+
+                <div class="profile-graphs">
+                    <h2>Profile B</h2>
+                    <div class="graph-panel">
+                        <h3>Rate Curves</h3>
+                        <canvas id="rate-canvas-b" width="700" height="400"></canvas>
+                        <div class="graph-legend">
+                            <span class="legend-item"><span class="line-solid roll"></span> Roll</span>
+                            <span class="legend-item"><span class="line-solid pitch"></span> Pitch</span>
+                            <span class="legend-item"><span class="line-solid yaw"></span> Yaw</span>
+                        </div>
+                    </div>
+                    <div class="graph-panel">
+                        <h3>Throttle Curve</h3>
+                        <canvas id="throttle-canvas-b" width="700" height="400"></canvas>
                     </div>
                 </div>
             </div>
