@@ -18,6 +18,7 @@ class RateProfile {
         this.initializeControls();
         this.initializeCanvases();
         this.initializeImportExport();
+        this.loadFromURL();
         this.updateGraphs();
         this.updateExport();
     }
@@ -244,9 +245,50 @@ class RateProfile {
         return commands.join('\n');
     }
 
+    loadFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+        const mapping = {
+            roll_rc_rate:  (v) => { this.rates.roll.center    = clamp(parseInt(v), 0, 255); },
+            roll_rate:     (v) => { this.rates.roll.maxRate   = clamp(parseInt(v), 200, 2000); },
+            roll_expo:     (v) => { this.rates.roll.expo      = clamp(parseInt(v), 0, 100); },
+            pitch_rc_rate: (v) => { this.rates.pitch.center   = clamp(parseInt(v), 0, 255); },
+            pitch_rate:    (v) => { this.rates.pitch.maxRate  = clamp(parseInt(v), 200, 2000); },
+            pitch_expo:    (v) => { this.rates.pitch.expo     = clamp(parseInt(v), 0, 100); },
+            yaw_rc_rate:   (v) => { this.rates.yaw.center     = clamp(parseInt(v), 0, 255); },
+            yaw_rate:      (v) => { this.rates.yaw.maxRate    = clamp(parseInt(v), 200, 2000); },
+            yaw_expo:      (v) => { this.rates.yaw.expo       = clamp(parseInt(v), 0, 100); },
+            thr_mid:       (v) => { this.throttle.mid         = clamp(parseInt(v), 0, 100); },
+            thr_expo:      (v) => { this.throttle.expo        = clamp(parseInt(v), 0, 100); },
+        };
+        let loaded = false;
+        for (const [key, apply] of Object.entries(mapping)) {
+            if (params.has(key)) { apply(params.get(key)); loaded = true; }
+        }
+        if (loaded) this.updateUIFromModel();
+    }
+
+    updateURL() {
+        const params = new URLSearchParams({
+            roll_rc_rate:  this.rates.roll.center,
+            roll_rate:     this.rates.roll.maxRate,
+            roll_expo:     this.rates.roll.expo,
+            pitch_rc_rate: this.rates.pitch.center,
+            pitch_rate:    this.rates.pitch.maxRate,
+            pitch_expo:    this.rates.pitch.expo,
+            yaw_rc_rate:   this.rates.yaw.center,
+            yaw_rate:      this.rates.yaw.maxRate,
+            yaw_expo:      this.rates.yaw.expo,
+            thr_mid:       this.throttle.mid,
+            thr_expo:      this.throttle.expo,
+        });
+        history.replaceState(null, '', '?' + params.toString());
+    }
+
     updateExport() {
         const exportText = document.getElementById('export-text');
         exportText.value = this.generateCLI();
+        this.updateURL();
     }
 
     copyExport() {
