@@ -1,0 +1,35 @@
+# FPV Rate Profile Playground
+
+> Interactive Betaflight Actual Rates calculator and visualizer. Configure roll/pitch/yaw rate curves and throttle response, see them graphed in real time, and export ready-to-paste Betaflight CLI commands.
+
+## URL API
+
+All parameters are passed as query string key=value pairs. Any omitted parameter uses its default. The page also keeps the URL in sync with the current slider state, so any configuration in the UI can be shared by copying the browser URL.
+
+### Parameters
+
+| Parameter      | Range     | Default | Description                                              |
+|----------------|-----------|---------|----------------------------------------------------------|
+| `roll_rc_rate`  | 0–255     | 70      | Roll center sensitivity                                  |
+| `roll_rate`     | 200–2000  | 670     | Roll max rate (deg/s)                                    |
+| `roll_expo`     | 0–100     | 0       | Roll expo                                                |
+| `pitch_rc_rate` | 0–255     | 70      | Pitch center sensitivity                                 |
+| `pitch_rate`    | 200–2000  | 670     | Pitch max rate (deg/s)                                   |
+| `pitch_expo`    | 0–100     | 0       | Pitch expo                                               |
+| `yaw_rc_rate`   | 0–255     | 70      | Yaw center sensitivity                                   |
+| `yaw_rate`      | 200–2000  | 670     | Yaw max rate (deg/s)                                     |
+| `yaw_expo`      | 0–100     | 0       | Yaw expo                                                 |
+| `thr_mid`       | 0–100     | 50      | Throttle mid point (integer; divide by 100 for 0.0–1.0) |
+| `thr_expo`      | 0–100     | 0       | Throttle expo                                            |
+
+Parameter names match the Betaflight CLI `set` command names (e.g. `set roll_rc_rate = 70`).
+
+### Example
+
+```
+https://cori.github.io/FPV-rate-profile-playground/?roll_rc_rate=100&roll_rate=800&roll_expo=20&pitch_rc_rate=100&pitch_rate=800&pitch_expo=20&yaw_rc_rate=70&yaw_rate=600&yaw_expo=0&thr_mid=50&thr_expo=0
+```
+
+## Optional: reference documentation
+
+- README: https://cori.github.io/FPV-rate-profile-playground/README.md
