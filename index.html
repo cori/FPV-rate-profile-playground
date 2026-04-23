@@ -10,6 +10,9 @@
     <div class="container">
         <h1>Betaflight Rate Profile Configuration</h1>
 
+        <!-- Reference profiles banner (shown when ?profiles= has >1 profile) -->
+        <div id="reference-profiles-banner" class="reference-profiles-banner" hidden></div>
+
         <div class="main-layout">
             <!-- Controls Panel -->
             <div class="controls-panel">
@@ -93,9 +96,10 @@
                     <h3>Rate Curve (Roll/Pitch/Yaw)</h3>
                     <canvas id="rate-canvas" width="600" height="400"></canvas>
                     <div class="graph-legend">
-                        <span class="legend-item roll">■ Roll</span>
-                        <span class="legend-item pitch">■ Pitch</span>
-                        <span class="legend-item yaw">■ Yaw</span>
+                        <span class="legend-item roll">&#9632; Roll</span>
+                        <span class="legend-item pitch">&#9632; Pitch</span>
+                        <span class="legend-item yaw">&#9632; Yaw</span>
+                        <span class="legend-item ref">&#9135;&#9135; Reference profiles</span>
                     </div>
                 </div>
 
@@ -137,6 +141,19 @@ set thr_expo = 0"></textarea>
                 <button id="copy-export-btn" class="btn btn-primary">Copy to Clipboard</button>
                 <div id="export-status" class="status-message"></div>
             </div>
+        </div>
+
+        <!-- Share URL Section -->
+        <div class="share-section">
+            <h2>Share / Compare</h2>
+            <p class="help-text">
+                Generate a shareable URL for your current profile. An LLM can also
+                <code>POST</code> profiles to <code>/api/share</code> to get a comparison URL.
+                See <a href="/openapi.json" target="_blank">/openapi.json</a> for the full API spec.
+            </p>
+            <input id="share-url-input" type="text" readonly placeholder="Click 'Copy Share URL' to generate…" class="share-url-input">
+            <button id="share-btn" class="btn btn-primary">Copy Share URL</button>
+            <div id="share-status" class="status-message"></div>
         </div>
     </div>
 
