@@ -1,3 +1,15 @@
+# ⚠️ DEPRECATED
+
+This repository has been consolidated into **[cori/fpv-tools](https://github.com/cori/fpv-tools)**.
+
+The rate profile comparison tool is now available at:
+- **Web**: https://cori.github.io/fpv-tools/rate-profile/
+- **Repository**: https://github.com/cori/fpv-tools (in the `rate-profile/` subdirectory)
+
+All future development happens in fpv-tools. Please visit there to report issues, request features, or contribute.
+
+---
+
 # FPV Rate Profile Comparison Tool
 
 A web-based tool for comparing and analyzing Betaflight rate profiles side-by-side. Built with vanilla JavaScript for maximum compatibility and performance.
