@@ -95,16 +95,9 @@ Example CLI format:
 ```
 set rates_type = ACTUAL
 set roll_rc_rate = 70
-set pitch_rc_rate = 70
-set yaw_rc_rate = 70
 set roll_rate = 670
-set pitch_rate = 670
-set yaw_rate = 670
 set roll_expo = 0
-set pitch_expo = 0
-set yaw_expo = 0
-set thr_mid = 50
-set thr_expo = 0
+…
 ```
 
 ### Exporting to Betaflight
@@ -161,7 +154,7 @@ Use the visibility controls to focus on specific comparisons:
   - Higher values = finer control at lower throttle
   - Useful for precise altitude control
 
-## Technical Details
+## Technical details
 
 ### Architecture
 - **Vanilla JavaScript**: No frameworks required - fast and lightweight

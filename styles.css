@@ -550,6 +550,11 @@ header h1 {
   padding: var(--spacing-lg);
 }
 
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
 .history-header {
   display: flex;
   justify-content: space-between;

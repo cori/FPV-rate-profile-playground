@@ -1,7 +1,7 @@
 {
-  "name": "fpv-rate-profile-comparison",
+  "name": "fpv-rate-profile-playground",
   "version": "1.0.0",
-  "description": "Compare and visualize Betaflight rate profiles",
+  "description": "Compare and visualize Betaflight rate profiles side-by-side",
   "type": "module",
   "scripts": {
     "test": "vitest run",
