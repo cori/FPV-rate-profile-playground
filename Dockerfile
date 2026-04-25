@@ -1,14 +1,13 @@
-FROM node:22-alpine
-WORKDIR /app
+# Use nginx to serve the static application
+FROM nginx:alpine
 
-# Install production dependencies only
-COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
+# Copy application files to nginx html directory
+COPY index.html /usr/share/nginx/html/
+COPY styles.css /usr/share/nginx/html/
+COPY src/ /usr/share/nginx/html/src/
 
-# Copy app source
-COPY server.js rates.js index.html styles.css ./
+# Expose port 80
+EXPOSE 80
 
-EXPOSE 3000
-ENV PORT=3000
-
-CMD ["node", "server.js"]
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]

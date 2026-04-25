@@ -1,163 +1,97 @@
-# FPV Rate Profile Playground
+# FPV Rate Profile Comparison Tool
 
-A web-based tool for visualizing, comparing, and sharing Betaflight Actual Rates profiles in real time.
+A web-based tool for comparing and analyzing Betaflight rate profiles side-by-side. Built with vanilla JavaScript for maximum compatibility and performance.
 
 ## Features
 
-- **Interactive rate curves** — roll, pitch, and yaw overlaid on a single graph
-- **Throttle curve** — with mid-point and expo controls
-- **Shareable URLs** — encode one or more profiles into a URL for instant comparison
-- **Multi-profile overlay** — up to 5 profiles shown simultaneously (solid + dashed lines)
-- **CLI import / export** — paste a Betaflight dump to load settings; copy commands back to your FC
-- **LLM-friendly API** — POST a rate profile, get back a visualization URL
+### Core Functionality
+- **Dual Profile Comparison**: Compare two rate profiles simultaneously on large, clear graphs
+- **Real-time Visualization**: See changes instantly as you adjust sliders
+- **Attitude Rate Curves**: Visualize roll, pitch, and yaw rate curves using Betaflight's Actual Rates algorithm
+- **Throttle Curves**: Compare throttle curves with mid-point and expo settings
 
----
+### Profile Management
+- **Import/Export**: Copy and paste Betaflight CLI commands to import or export profiles
+- **Named Profiles**: Give your profiles meaningful names for easy identification
+- **Profile History**: All saved profiles are stored in your browser's localStorage
+- **History Export/Import**: Export your entire profile history as JSON for backup or sharing
+- **Timeline Navigation**: Load any saved profile into either comparison slot
 
-## Quick start (with server)
+### Visualization Controls
+- **Profile Visibility**: Toggle between Profile A (solid lines) and Profile B (dashed lines)
+- **Attitude Filtering**: Show/hide individual attitudes (roll, pitch, yaw)
+- **Color Coding**:
+  - Roll: Red (#ff3366)
+  - Pitch: Green (#33ff66)
+  - Yaw: Orange (#ffaa00)
+  - Throttle: Blue (#00aaff)
 
-```bash
-npm install
-npm start          # http://localhost:3000
-```
+### Accessibility
+- Dark theme optimized for extended viewing sessions
+- Keyboard navigation support
+- High contrast mode support
+- Reduced motion support for accessibility preferences
+- Clear visual differentiation between profiles and attitudes
 
-Or open `index.html` directly in a browser (URL sharing requires the server).
+## Quick Start
 
----
+### Local Development
 
-## API
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd FPV-rate-profile-playground
+   ```
 
-The server exposes a small REST API so that tools, scripts, and LLMs can generate comparison URLs programmatically.
+2. **Open in browser**
+   ```bash
+   # Simply open index.html in your browser
+   open index.html
+   # or
+   python -m http.server 8000
+   # Then visit http://localhost:8000
+   ```
 
-### Discovery endpoints
+3. **Run tests**
+   ```bash
+   npm install
+   npm test
+   ```
 
-| Endpoint | Description |
-|---|---|
-| `GET /openapi.json` | OpenAPI 3.0 spec (machine-readable) |
-| `GET /.well-known/ai-plugin.json` | AI plugin manifest |
+### Docker Deployment
 
-### `POST /api/share`
+1. **Build the Docker image**
+   ```bash
+   docker build -t fpv-rate-comparison .
+   ```
 
-Accept 1–5 rate profiles and return a shareable URL.
+2. **Run the container**
+   ```bash
+   docker run -p 8080:80 fpv-rate-comparison
+   ```
 
-**Request**
+3. **Access the application**
+   ```
+   Open http://localhost:8080 in your browser
+   ```
 
-```http
-POST /api/share
-Content-Type: application/json
+## Usage Guide
 
-{
-  "profiles": [
-    {
-      "name": "Freestyle",
-      "roll_rc_rate": 70,  "roll_rate": 670,  "roll_expo": 0,
-      "pitch_rc_rate": 70, "pitch_rate": 670, "pitch_expo": 0,
-      "yaw_rc_rate": 70,   "yaw_rate": 600,   "yaw_expo": 0,
-      "thr_mid": 50, "thr_expo": 0
-    }
-  ]
-}
-```
+### Comparing Rate Profiles
 
-All numeric fields are **optional** — missing fields fall back to Betaflight defaults.
+1. **Adjust Profile A and B** using the sliders in the respective editor panels
+2. **View real-time comparison** in the rate and throttle curve graphs
+3. **Toggle visibility** using the checkboxes to focus on specific profiles or attitudes
 
-**Response**
+### Importing from Betaflight
 
-```json
-{
-  "url": "http://localhost:3000/?profiles=eyJuYW1lIjoiRnJlZXN..."
-}
-```
+1. Connect to your flight controller in Betaflight Configurator
+2. Go to CLI tab and type `dump` or `diff` to get your settings
+3. Copy the relevant rate settings (or the entire dump)
+4. Paste into the "Import from CLI" textarea in Profile A or B
+5. Click "Import" - the tool will extract and apply all recognized rate parameters
 
-Open `url` in a browser to see the interactive visualization.
-
-### Profile field reference
-
-| Field | Range | Description |
-|---|---|---|
-| `name` | string | Optional display label |
-| `roll_rc_rate` | 0–255 | Roll center sensitivity |
-| `roll_rate` | 200–2000 | Roll max rate (deg/s) |
-| `roll_expo` | 0–100 | Roll expo (0 = linear) |
-| `pitch_rc_rate` | 0–255 | Pitch center sensitivity |
-| `pitch_rate` | 200–2000 | Pitch max rate (deg/s) |
-| `pitch_expo` | 0–100 | Pitch expo |
-| `yaw_rc_rate` | 0–255 | Yaw center sensitivity |
-| `yaw_rate` | 200–2000 | Yaw max rate (deg/s) |
-| `yaw_expo` | 0–100 | Yaw expo |
-| `thr_mid` | 0–100 | Throttle mid-point (50 → 0.50) |
-| `thr_expo` | 0–100 | Throttle expo |
-
----
-
-## Comparing profiles
-
-Send multiple profiles to compare them side by side:
-
-```bash
-curl -s -X POST http://localhost:3000/api/share \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "profiles": [
-      {"name":"Freestyle","roll_rc_rate":70,"roll_rate":670,"roll_expo":0,
-       "pitch_rc_rate":70,"pitch_rate":670,"pitch_expo":0,
-       "yaw_rc_rate":70,"yaw_rate":600,"yaw_expo":0,"thr_mid":50,"thr_expo":0},
-      {"name":"Cinematic","roll_rc_rate":40,"roll_rate":400,"roll_expo":40,
-       "pitch_rc_rate":40,"pitch_rate":400,"pitch_expo":40,
-       "yaw_rc_rate":40,"yaw_rate":350,"yaw_expo":40,"thr_mid":55,"thr_expo":30}
-    ]
-  }' | jq -r .url
-```
-
-The returned URL shows both profiles overlaid: the **first profile** (solid lines) is loaded into the interactive editor; **additional profiles** appear as dashed reference overlays.
-
----
-
-## Usage with an LLM
-
-Point an LLM at this server. It can discover everything it needs from the plugin manifest and OpenAPI spec:
-
-1. `GET /.well-known/ai-plugin.json` — the model finds the API description
-2. `GET /openapi.json` — the model reads the schema
-3. `POST /api/share` — the model sends profile data and returns the URL to you
-
-**Example prompt to an LLM:**
-
-> "I fly these rates: roll rc_rate 70, rate 670, expo 0 / pitch same / yaw rc_rate 65 rate 580 expo 0. My friend flies rc_rate 90, rate 900, expo 20 across all axes. Use the FPV Rate Playground at http://localhost:3000 to generate a comparison URL."
-
----
-
-## URL format
-
-Profiles are base64url-encoded JSON in the `?profiles=` query parameter. You can construct URLs directly:
-
-```javascript
-const profiles = [{ roll_rc_rate: 70, roll_rate: 670, /* … */ }];
-const encoded  = btoa(JSON.stringify(profiles))
-                   .replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-const url = `http://localhost:3000/?profiles=${encoded}`;
-```
-
----
-
-## Parameters
-
-### Rate Settings (Roll / Pitch / Yaw)
-
-- **Center Sensitivity** (0–255): Rate at center stick
-- **Max Rate** (200–2000 deg/s): Rate at full deflection
-- **Expo** (0–100): Curvature — 0 = linear, higher = more center precision
-
-### Throttle Settings
-
-- **Mid Point** (0–100): Output at 50 % stick (50 → 0.50 = linear hover)
-- **Expo** (0–100): Throttle response curve
-
----
-
-## CLI import / export
-
-**Import** — paste a Betaflight CLI dump and click *Import Settings*:
-
+Example CLI format:
 ```
 set rates_type = ACTUAL
 set roll_rc_rate = 70
@@ -166,26 +100,121 @@ set roll_expo = 0
 …
 ```
 
-**Export** — the export textarea updates live; click *Copy to Clipboard*, then paste into Betaflight CLI and run `save`.
+### Exporting to Betaflight
 
----
+1. Adjust your rates using the sliders
+2. The export textarea automatically updates with CLI commands
+3. Click "Copy" to copy the commands to clipboard
+4. Paste into Betaflight CLI and type `save`
 
-## Running tests
+### Saving Profiles
 
-```bash
-npm test
-```
+1. **Name your profile** using the text input at the top of each editor
+2. **Click "Save Profile"** to add it to your history
+3. **Auto-save**: Profiles with custom names are automatically saved 2 seconds after you stop adjusting sliders
 
-Uses Node's built-in test runner — no extra dependencies required.
+### Managing History
 
----
+- **Load to A/B**: Click to load a saved profile into either comparison slot
+- **Delete**: Remove a profile from history
+- **Export History**: Download your entire history as a JSON file
+- **Import History**: Upload a previously exported history file
+- **Clear All**: Remove all saved profiles (with confirmation)
+
+### Filtering View
+
+Use the visibility controls to focus on specific comparisons:
+- Toggle Profile A or B to see one at a time
+- Toggle individual attitudes (roll/pitch/yaw) to reduce visual clutter
+- All combinations are supported for flexible analysis
+
+## Rate Parameters
+
+### Attitude Rates (Roll/Pitch/Yaw)
+- **Center Sensitivity (0-255)**: Controls the rate at center stick position
+  - Higher values = more responsive at center
+  - Affects the slope of the curve when expo is applied
+
+- **Max Rate (200-2000 deg/s)**: Maximum rotation rate at full stick deflection
+  - Higher values = faster maximum rotation
+  - Typical range: 600-800 deg/s
+
+- **Expo (0-100)**: Exponential curve for stick feel
+  - 0 = Linear response
+  - Higher values = less sensitive at center, more sensitive at edges
+  - Smooths the transition between center and max rate
+
+### Throttle Settings
+- **Mid Point (0-100)**: Throttle output at 50% stick position
+  - Adjust for hover throttle
+  - Typical value: 40-60
+
+- **Expo (0-100)**: Exponential curve for throttle response
+  - 0 = Linear throttle response
+  - Higher values = finer control at lower throttle
+  - Useful for precise altitude control
 
 ## Technical details
 
-- Vanilla JS + HTML5 Canvas (no frameworks)
-- Express server for the share API and static serving
-- Profiles encoded as base64url JSON in the URL — no database, no auth
-- Implements Betaflight's **Actual Rates** algorithm exactly
+### Architecture
+- **Vanilla JavaScript**: No frameworks required - fast and lightweight
+- **ES6 Modules**: Clean, modular code organization
+- **HTML5 Canvas**: High-performance graph rendering
+- **LocalStorage**: Client-side profile persistence
+- **TDD Approach**: Comprehensive test coverage using Vitest
+
+### File Structure
+```
+├── index.html              # Main application page
+├── styles.css              # Styling and theme
+├── src/
+│   ├── app.js             # Main application controller
+│   ├── rate-calculator.js # Betaflight rate calculations
+│   ├── graph-renderer.js  # Canvas-based graph rendering
+│   ├── profile-manager.js # Profile storage and history
+│   └── cli-parser.js      # CLI import/export parsing
+├── tests/
+│   ├── rate-calculator.test.js
+│   ├── cli-parser.test.js
+│   └── profile-manager.test.js
+├── Dockerfile             # Container configuration
+└── package.json          # Development dependencies
+```
+
+### Browser Compatibility
+- Modern browsers with ES6 module support
+- Chrome 61+
+- Firefox 60+
+- Safari 11+
+- Edge 16+
+
+### Rate Calculation Algorithm
+This tool implements Betaflight's Actual Rates algorithm:
+```javascript
+rate = rcCommandAbs * centerSensitivity + expof * (maxRate - centerSensitivity)
+```
+
+Where:
+- `rcCommandAbs` is the absolute RC stick input (0 to 1)
+- `centerSensitivity = center * 10` (converts 0-255 to deg/s)
+- `expof` is the expo-processed stick input
+- `maxRate` is the maximum rate in deg/s
+
+## Development
+
+### Running Tests
+```bash
+npm install
+npm test              # Run all tests
+npm run test:watch    # Watch mode for development
+npm run test:coverage # Generate coverage report
+```
+
+### Project Goals
+Built following Test-Driven Development (TDD) principles:
+- Good coverage of features
+- Fair coverage of functions
+- Red-Green-Refactor workflow
 
 ## License
 
